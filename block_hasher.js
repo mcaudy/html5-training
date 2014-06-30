@@ -16,8 +16,7 @@ var doubleHashFunc = function(data)	{
 var convertEndian = function(string)	{
 	var result = "";
 	for (var i = 0; i < string.length; i = i+2)	{
-		var subString = string.charAt(i);
-		subString += string.charAt(i + 1);
+		var subString = string.substring(i, i + 2);
 		result = subString + result;
 	}
 
@@ -35,29 +34,29 @@ var padString = function(string)	{
 	return result;
 }
 
-var block = require('./genesis_block.json');
+var block = require('./data/block.json');
 
 var littleEndianPrevious = convertEndian(block.prev_block);
-console.log("Previous block: " + littleEndianPrevious);
+console.log("Previous block (little endian): " + littleEndianPrevious);
 
 var littleEndianMrklRoot = convertEndian(block.mrkl_root);
-console.log("Mrkl_root: " + littleEndianMrklRoot);
+console.log("Mrkl_root (little endian): " + littleEndianMrklRoot);
 
 var littleEndianVersion = convertEndian(padString(block.ver.toString(16)));
-console.log("Version: " + littleEndianVersion);
+console.log("Version (little endian): " + littleEndianVersion);
 
 var littleEndianTime = convertEndian(block.time.toString(16));
-console.log("Time: " + littleEndianTime);
+console.log("Time (little endian): " + littleEndianTime);
 
 var littleEndianBits = convertEndian(padString(block.bits.toString(16)));
-console.log("Bits: " + littleEndianBits);
+console.log("Bits (little endian): " + littleEndianBits);
 
 var littleEndianNonce = convertEndian(padString(block.nonce.toString(16)));
-console.log("Nonce:" + littleEndianNonce);
+console.log("Nonce (little endian):" + littleEndianNonce);
 
 var headerString = littleEndianVersion + littleEndianPrevious + littleEndianMrklRoot + littleEndianTime + littleEndianBits + littleEndianNonce;
 var hash = doubleHashFunc(headerString);
-console.log("Resultant hash:");
+console.log("Resultant hash (big endian):");
 console.log(convertEndian(hash));
 
 
