@@ -1,17 +1,19 @@
-var crypto = require('crypto');
+"use strict";
+
+var crypto = require("crypto");
 
 var hashFunc = function(hexString)	{
-	var shasum = crypto.createHash('sha256');
+	var shasum = crypto.createHash("sha256");
 
-	var data = new Buffer(hexString, 'hex');
+	var data = new Buffer(hexString, "hex");
 	shasum.update(data);
-	return shasum.digest('hex');
-}
+	return shasum.digest("hex");
+};
 
 var doubleHashFunc = function(data)	{
 	var digest = hashFunc(data);
 	return hashFunc(digest);
-}
+};
 
 var convertEndian = function(string)	{
 	var result = "";
@@ -21,18 +23,18 @@ var convertEndian = function(string)	{
 	}
 
 	return result;
-}
+};
 
 var padString = function(string)	{
 	var result = string;
 	if (result.length < 8)	{
 		var diff = 8 - result.length;
 		for (var i = 0; i < diff; ++i)	{
-			result = '0' + result;
+			result = "0" + result;
 		}
 	}
 	return result;
-}
+};
 
 var calculateBottomRowOfMrklTree = function(mrklTree)	{
 	var bottomRow = [];
@@ -59,7 +61,7 @@ var calculateBottomRowOfMrklTree = function(mrklTree)	{
 		bottomRow[bottomRow.length] = bottomRow[bottomRow.length - 1];
 	}
 	return bottomRow;
-}
+};
 
 var calculateNextRow = function(currentRow)	{
 	var nextRow = [];
@@ -74,7 +76,7 @@ var calculateNextRow = function(currentRow)	{
 		nextRow[Math.floor(i/2)] = convertEndian(doubleHashFunc(d1Le + d2Le));
 	}
 	return nextRow;
-}
+};
 
 var calculateMrklRoot = function(mrklTree)	{
 	var row = calculateBottomRowOfMrklTree(mrklTree);
@@ -83,7 +85,7 @@ var calculateMrklRoot = function(mrklTree)	{
 		row = calculateNextRow(row);
 		console.log("Next Row: " + row);
 	}
-}
+};
 
 // For quick testing, we currently try and calculate the merkle root of our transactions tree if this script is run from Node.
 var block = require("./data/block.json");
@@ -124,6 +126,6 @@ var verifyDataBlock = function(blockFilePath)	{
 	}
 
 	return result;
-}
+};
 
 module.exports.verifyDataBlock = verifyDataBlock;
