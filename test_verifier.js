@@ -1,16 +1,15 @@
 var verifier = require("./block_verifier");
 
-var testBlock = function(blockFile)	{
-	console.log("Testing " + blockFile);
-	var result = verifier.verifyDataBlock(blockFile);
-	if (result)	{
-		console.log("Pass");
+var assertEquals = function(expected, observed)	{
+	if (expected === observed)	{
+		console.log("Test Pass");
 	}
 	else	{
-		console.log("Fail");
+		console.log("Test Fail");
 	}
+	console.log();
 }
 
-testBlock("./data/block.json");
-testBlock("./data/genesis_block.json");
-testBlock("./data/invalid_block.json");
+assertEquals(true, verifier.verifyDataBlock("./data/block.json"));
+assertEquals(true, verifier.verifyDataBlock("./data/genesis_block.json"));
+assertEquals(false, verifier.verifyDataBlock("./data/invalid_block.json"));

@@ -60,7 +60,15 @@ var verifyDataBlock = function(blockFilePath)	{
 	console.log("Calculated hash (big endian):");
 	console.log(calculatedHash);
 
-	return calculatedHash === block.hash;
+	var result = (calculatedHash === block.hash);
+	if (result)	{
+		console.log("Valid block");
+	}
+	else	{
+		console.log("Invalid block");
+	}
+
+	return result;
 }
 
 module.exports.verifyDataBlock = verifyDataBlock;
