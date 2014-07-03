@@ -8,23 +8,15 @@
 
 <!-- Carousel
 ================================================== -->
-<div id="myCarousel" class="carousel slide" data-ride="carousel">
-  <ol class="carousel-indicators">
-    <li ng-repeat="block in blocks | filter:query" data-target="#myCarousel" data-slide-to="{{$index}}" ng-class="{active: $first}"></li>
-  </ol>
-  <div class="carousel-inner">
-    <div class="item" ng-repeat="block in blocks | filter:query" ng-class="{active: $first}">
-      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Block">
-      <div class="container">
-        <div class="carousel-caption">
-          <h1>{{block.name}}</h1>
-          <p>Hash: {{block.hash}}</p>
-          <p><a class="btn btn-lg btn-primary" href="#/block-list/{{block.name}}" role="button">Details</a></p>
-        </div>
+<div style="height: 500px">
+  <carousel>
+    <slide ng-repeat="block in blocks | filter: query" active="slide.active">
+      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="{{block.name}}}">
+      <div class="carousel-caption">
+        <h1>{{block.name}}</h1>
+        <p>{{block.hash}}</p>
+        <p><a class="btn btn-lg btn-primary" href="#/block-list/{{block.name}}" role="button">Details</a></p>
       </div>
-    </div>
-  </div>
-  <!-- Can't get buttons to work properly at the moment, so I'm disabling them for now
-  <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
-  <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
-</div> --> <!-- /.carousel -->
+    </slide>
+  </carousel>
+</div>

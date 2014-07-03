@@ -7,7 +7,8 @@ angular.module('blockExplorer', [
   'blockExplorer.filters',
   'blockExplorer.services',
   'blockExplorer.directives',
-  'blockExplorer.controllers'
+  'blockExplorer.controllers',
+  'ui.bootstrap'
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/block-list', {templateUrl: 'partials/block-list.html', controller: 'BlockListController'});
