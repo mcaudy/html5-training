@@ -10,7 +10,7 @@ angular.module('blockExplorer', [
   'blockExplorer.controllers'
 ]).
 config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/block-list', {templateUrl: 'partials/block-list.html', controller: 'MyCtrl1'});
-  $routeProvider.when('/block-details', {templateUrl: 'partials/block-details.html', controller: 'MyCtrl2'});
+  $routeProvider.when('/block-list', {templateUrl: 'partials/block-list.html', controller: 'BlockListController'});
+  $routeProvider.when('/block-list/:name', {templateUrl: 'partials/block-details.html', controller: 'BlockDetailsController'});
   $routeProvider.otherwise({redirectTo: '/block-list'});
 }]);

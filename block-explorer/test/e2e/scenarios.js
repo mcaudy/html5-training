@@ -26,14 +26,14 @@ describe('my app', function() {
   });
 
 
-  describe('block-detail', function() {
+  describe('block details', function() {
 
     beforeEach(function() {
-      browser.get('index.html#/block-details');
+      browser.get('index.html#/block-list/Block 1');
     });
 
 
-    it('should render block-details when user navigates to /block-details', function() {
+    it('should render block details when user navigates to one of the details pages', function() {
       expect(element.all(by.css('[ng-view] h1')).first().getText()).
         toMatch(/Block 1/);
         expect(element.all(by.css('[ng-view] p')).first().getText()).toMatch(/Version: 1/);
