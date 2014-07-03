@@ -1,14 +1,7 @@
 <div class="navbar-collapse collapse">
   <form class="navbar-form navbar-right" role="form">
     <div class="form-group">
-      <input type="text" placeholder="Search term" class="form-control">
-    </div>
-    <div class="form-group">
-      <select class="form-control">
-        <option value="hash">Hash</option>
-        <option value="height">Height</option>
-        <option value="index">Index</option>
-      </select>
+      <input type="text" placeholder="Search term" class="form-control" ng-model="query">
     </div>
   </form>
 </div>
@@ -17,10 +10,10 @@
 ================================================== -->
 <div id="myCarousel" class="carousel slide" data-ride="carousel">
   <ol class="carousel-indicators">
-    <li ng-repeat="block in blocks" data-target="#myCarousel" data-slide-to="{{$index}}" ng-class="{active: $first}"></li>
+    <li ng-repeat="block in blocks | filter:query" data-target="#myCarousel" data-slide-to="{{$index}}" ng-class="{active: $first}"></li>
   </ol>
   <div class="carousel-inner">
-    <div class="item" ng-repeat="block in blocks" ng-class="{active: $first}">
+    <div class="item" ng-repeat="block in blocks | filter:query" ng-class="{active: $first}">
       <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Block">
       <div class="container">
         <div class="carousel-caption">
