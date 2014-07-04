@@ -4,19 +4,27 @@
 
 beforeEach(module('blockExplorer'));
 
-describe('controllers', function(){
+describe('Block list controller', function()  {
+  var scope;
+  var ctrl;
+  var $httpBackend;
 
-  it('should define a block list controller', inject(function($controller) {
-    //spec body
-    var blockListController = $controller('BlockListController', { $scope: {} });
-    expect(blockListController).toBeDefined();
-  }));
+  beforeEach(inject(function(_$httpBackend_, $rootScope, $controller)  {
+      $httpBackend = _$httpBackend_;
+      $httpBackend.expectGET('http://localhost:8000/bitCoinSite/q/latesthash').respond({name:'TestHash'});
 
-  it('should define a block details controller', inject(function($controller) {
-    //spec body
-    var blockDetailsController = $controller('BlockDetailsController', { $scope: {}, $routeParams: {name: 'Block 1'} });
-    expect(blockDetailsController).toBeDefined();
-  }));
+      scope = $rootScope.$new();
+      ctrl = $controller('BlockListController', {$scope: scope});
+    }));
+
+  it('should be defined', function()  {
+    expect(ctrl).toBeDefined();
+  });
+
+  it('should get latest hash from Block Explorer', function() {
+    $httpBackend.flush();
+    expect(scope.latesthash.name).toBe('TestHash');
+  });
 });
 
 describe('Block details controller', function() {
@@ -28,6 +36,10 @@ describe('Block details controller', function() {
       scope = $rootScope.$new();
       ctrl = $controller('BlockDetailsController', {$scope: scope});
     }));
+
+    it('should be defined', function()  {
+      expect(ctrl).toBeDefined();
+    });
 
     it('should display block detail', function()  {
       expect(scope.block).toBeDefined();

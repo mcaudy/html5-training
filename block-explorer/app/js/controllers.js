@@ -20,7 +20,12 @@ dataModel['Block 3'] = new BlockData('Block 3', '00000000000000001e8d6829a8a21ad
 /* Controllers */
 
 angular.module('blockExplorer.controllers', [])
-  .controller('BlockListController', ['$scope', function($scope) {
+  .controller('BlockListController', ['$scope', '$http', '$log', function($scope, $http, $log) {
+  	$http.get('http://localhost:8000/bitCoinSite/q/latesthash').success(function(data)	{
+      console.log('Data: ' + data);
+  		$scope.latesthash = data;
+  	});
+
   	// Put our blocks into an array to be displayed in our list
   	var blocksArray = [];
   	var index = 0;
