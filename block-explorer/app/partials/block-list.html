@@ -6,22 +6,25 @@
   </form>
 </div>
 
-<div class="page-header">
-  <h2>Block Explorer</h2>
-</div>
-
 <!-- Carousel
 ================================================== -->
-<div>
-  <h3 class="text-center">Latest 10 Blocks</h3>
-  <carousel>
-    <slide ng-repeat="page in pages" active="slide.active">
-      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==">
-      <div class="carousel-caption">
-        <div class="list-group">
-          <a href="#/block-list/{{block.hash}}" class="list-group-item" ng-repeat="block in blocks | filter: query">{{block.hash}}</a>
+<div class="container">
+  <div class="jumbotron">
+    <h2 class="text-center">Latest 10 Blocks</h2>
+    <div class="row">
+        <div class="col-md-1">
+          <a href="#/block-list" role="button">
+            <span class="glyphicon glyphicon-chevron-left" ng-click="getPrevious()"></span>
+          </a>
         </div>
-      </div>
-    </slide>
-  </carousel>
+        <div class="col-md-10">
+          <a href="#/block-list/{{block}}" class="list-group-item" ng-repeat="block in blocks | filter: query">{{block}}</a>
+        </div>
+        <div class="col-md-1">
+          <a href="#/block-list" role="button">
+            <span class="glyphicon glyphicon-chevron-right" ng-click="getNext()"></span>
+          </a>
+        </div>
+    </div>
+  </div>
 </div>
