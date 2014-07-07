@@ -6,18 +6,21 @@
   </form>
 </div>
 
-<p>Latest hash: {{latesthash}}</p>
+<div class="page-header">
+  <h2>Block Explorer</h2>
+</div>
 
 <!-- Carousel
 ================================================== -->
-<div style="height: 500px">
+<div>
+  <h3 class="text-center">Latest 10 Blocks</h3>
   <carousel>
-    <slide ng-repeat="block in blocks | filter: query" active="slide.active">
-      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="{{block.name}}}">
+    <slide ng-repeat="page in pages" active="slide.active">
+      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==">
       <div class="carousel-caption">
-        <h1>{{block.name}}</h1>
-        <p>{{block.hash}}</p>
-        <p><a class="btn btn-lg btn-primary" href="#/block-list/{{block.name}}" role="button">Details</a></p>
+        <div class="list-group">
+          <a href="#/block-list/{{block.hash}}" class="list-group-item" ng-repeat="block in blocks | filter: query">{{block.hash}}</a>
+        </div>
       </div>
     </slide>
   </carousel>

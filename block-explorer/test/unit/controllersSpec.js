@@ -14,27 +14,30 @@ describe('Block list controller', function()  {
       $httpBackend.expectGET('http://localhost:8000/bitCoinSite/q/latesthash').respond({name:'TestHash'});
 
       scope = $rootScope.$new();
-      ctrl = $controller('BlockListController', {$scope: scope});
+      ctrl = $controller('BlockListController', {$scope: scope, DataModel: {}});
     }));
 
   it('should be defined', function()  {
     expect(ctrl).toBeDefined();
-  });
-
-  it('should get latest hash from Block Explorer', function() {
-    $httpBackend.flush();
-    expect(scope.latesthash.name).toBe('TestHash');
   });
 });
 
 describe('Block details controller', function() {
     var scope;
     var ctrl;
+    var expectedHash = 'TestValue';
 
     beforeEach(inject(function($rootScope, $routeParams, $controller)  {
-      $routeParams.name = 'Block 1';
+      $routeParams.hash = expectedHash;
       scope = $rootScope.$new();
-      ctrl = $controller('BlockDetailsController', {$scope: scope});
+      ctrl = $controller('BlockDetailsController', {$scope: scope, DataModel: {
+        'TestValue': 
+          {hash: expectedHash,
+            ver: '1',
+            prev_block: 'ffff',
+            mrkl_root: '00ff'}
+        }
+      });
     }));
 
     it('should be defined', function()  {
@@ -43,9 +46,9 @@ describe('Block details controller', function() {
 
     it('should display block detail', function()  {
       expect(scope.block).toBeDefined();
-      expect(scope.block.name).toBe('Block 1');
-      expect(scope.block.version).toBe('1');
-      expect(scope.block.previousBlock).toBe('TODO');
-      expect(scope.block.merkleRoot).toBe('TODO');
+      expect(scope.block.hash).toBe(expectedHash);
+      expect(scope.block.ver).toBe('1');
+      expect(scope.block.prev_block).toBe('ffff');
+      expect(scope.block.mrkl_root).toBe('00ff');
     });
   });

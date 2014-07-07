@@ -61,6 +61,11 @@ body {
   height: 500px;
 }
 
+/* Default styles for indicator elements */
+.carousel-indicators li { 
+  visibility: hidden;
+}
+
 
 
 /* MARKETING CONTENT
