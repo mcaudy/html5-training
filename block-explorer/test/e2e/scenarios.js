@@ -21,6 +21,8 @@ describe('my app', function() {
     it('should render block-list when user navigates to /block-list', function() {
       expect(element.all(by.css('[ng-view] h2')).first().getText()).
         toMatch(/Block Explorer/);
+
+      expect(element.all(by.css('[ng-view] .list-group-item')).count()).toEqual(10);
     });
 
   });
