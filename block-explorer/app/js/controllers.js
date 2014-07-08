@@ -6,7 +6,7 @@ var bitCoinUrl = 'http://localhost:8000/bitCoinSite';
 
 var controllers = angular.module('blockExplorer.controllers', []);
 
-controllers.service('DataModel', ['$rootScope', '$http', function($rootScope, $http) {
+controllers.service('DataModel', ['$rootScope', '$http', '$q', function($rootScope, $http, $q) {
   var currentPageIndex = 0;
   var currentPageHashes = [];
   var blockHashes = [];
@@ -15,23 +15,23 @@ controllers.service('DataModel', ['$rootScope', '$http', function($rootScope, $h
     return $http.get(bitCoinUrl + '/rawblock/' + blockHash);
   };
 
-  var loadPageData = function(startingHash, pageIndex)  {
-    var blockDataPromise = loadBlockData(startingHash);
-    blockDataPromise.success(function(blockData)  {
-      currentPageHashes[currentPageHashes.length] = startingHash;
+  var storeHashAndGetPreviousHash = function(httpResponse) {
+    var blockData = httpResponse.data;
+    var deferred = $q.defer();
+    currentPageHashes[currentPageHashes.length] = blockData.hash;
+    deferred.resolve(blockData.prev_block);
+    return deferred.promise;
+  };
 
-      // We keep loading blocks until we have a chain of 10
-      if (currentPageHashes.length < 10)  {
-        console.log('Block loaded. Loading next one...');
-        loadPageData(blockData.prev_block, pageIndex);
-      }
-      // At that point, let our app know that new data is available
-      else  {
-        console.log('Reached 10 blocks');
-        console.log('Broadcasting data update');
-        blockHashes[pageIndex] = currentPageHashes;
-        $rootScope.$broadcast('dataModel::dataUpdated');
-      }
+  var loadPageData = function(startingHash, pageIndex)  {
+    var promise = loadBlockData(startingHash).then(storeHashAndGetPreviousHash);
+    for (var i = 0; i < 9; ++i) {
+      promise = promise.then(loadBlockData).then(storeHashAndGetPreviousHash);
+    }
+
+    promise = promise.then(function() {
+      blockHashes[pageIndex] = currentPageHashes;
+      $rootScope.$broadcast('dataModel::dataUpdated');
     });
   };
 
