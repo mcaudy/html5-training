@@ -9,7 +9,7 @@ var controllers = angular.module('blockExplorer.controllers', []);
 controllers.service('DataModel', ['$rootScope', '$http', '$q', function($rootScope, $http, $q) {
   var currentPageIndex = 0;
   var currentPageHashes = [];
-  var blockHashes = [];
+  var blockHashes = [currentPageHashes];
 
   var loadBlockData = function(blockHash)  {
     return $http.get(bitCoinUrl + '/rawblock/' + blockHash);
@@ -35,14 +35,17 @@ controllers.service('DataModel', ['$rootScope', '$http', '$q', function($rootSco
     });
   };
 
-  // Kick things off by querying bitcoin explorer for the latest block available
-  $http.get(bitCoinUrl + '/q/latesthash').success(function(hash)  {
+  this.loadLatestPageData = function() {
+    console.log('Loading latest data');
+    // Kick things off by querying bitcoin explorer for the latest block available
+    $http.get(bitCoinUrl + '/q/latesthash').success(function(hash)  {
         loadPageData(hash.toLowerCase());
 
         // For testing, I've got a block hash here which I know contains data
         //loadPageData('00000000000000001be85a1d1ef9e276a3638d9d6d9d028c2b9d2b9b77b228ba', currentPageIndex);
       }
     );
+  };
 
   this.getPreviousBlocksArray = function()  {
     if (currentPageIndex === 0) {
@@ -54,7 +57,7 @@ controllers.service('DataModel', ['$rootScope', '$http', '$q', function($rootSco
         currentPageHashes = [];
 
         // Add an empty page to the start of our data
-        blockHashes.unshift([]);
+        blockHashes.unshift(currentPageHashes);
 
         // Load in the previous page-worth of data
         loadPageData(previousBlockHash, 0);
@@ -81,7 +84,12 @@ controllers.service('DataModel', ['$rootScope', '$http', '$q', function($rootSco
 
   // We return a promise. The client should handle the success and error cases
   this.getBlockData = function(blockHash) {
-    return loadBlockData(blockHash);
+    return loadBlockData(blockHash).then(function(httpResponse)  {
+      var blockData = httpResponse.data;
+      var deferred = $q.defer();
+      deferred.resolve(blockData);
+      return deferred.promise;
+    });
   };
 
   this.getCurrentPageHashes = function()  {
@@ -91,9 +99,16 @@ controllers.service('DataModel', ['$rootScope', '$http', '$q', function($rootSco
   this.isLastPage = function()  {
     return currentPageIndex === blockHashes.length - 1;
   };
+
+  this.isEmpty = function() {
+    return ((blockHashes.length === 0) || (blockHashes.length === 1 && currentPageHashes.length === 0));
+  }
 }]);
 
 controllers.controller('BlockListController', ['$scope', '$http', 'DataModel', function($scope, $http, DataModel) {
+    if (DataModel.isEmpty())  {
+      DataModel.loadLatestPageData();
+    }
 
     console.log('Loading block list controller');
 
@@ -121,7 +136,8 @@ controllers.controller('BlockDetailsController', ['$scope', '$routeParams', 'Dat
     var updateBlockData = function(hash)  {
       // Using the name of the block as the key, get the block data from the backing data model
       var blockPromise = DataModel.getBlockData(hash);
-      blockPromise.success(function(data) {
+      blockPromise.then(function(data) {
+        console.log(data);
         $scope.block = data;
       });
     };
