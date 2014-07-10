@@ -10,3 +10,7 @@ path.link {
   shape-rendering: crispEdges;
   vector-effect: non-scaling-stroke;
 }
+
+text {
+	font-size: 6px;
+}
