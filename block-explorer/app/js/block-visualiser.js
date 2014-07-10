@@ -15,6 +15,7 @@ d3module.service('visualiseService', function() {
 
       var svgSize = 960;
       var treeSize = svgSize * 0.8;
+      var transitionDuration = 750;
 
       var tree = d3.layout.tree()
                   .sort(null)
@@ -24,7 +25,14 @@ d3module.service('visualiseService', function() {
                   });
 
       var nodes = tree.nodes(treeData);
+      nodes.forEach(function(node)  {
+        node.highlight = false;
+      });
+
       var links = tree.links(nodes);
+      links.forEach(function(link)  {
+        link.highlight = false;
+      });
 
       // Set zoom behaviour on the svg element. This also seems to enable dragging behaviour. Good times.
       var zoom = d3.behavior.zoom()
@@ -44,7 +52,7 @@ d3module.service('visualiseService', function() {
         .attr('transform', 'translate(' + treeSize / 3 + ',' + treeSize / 3 + ')scale(0.2,0.2)');
 
       layoutRoot.transition()
-          .duration(750)
+          .duration(transitionDuration)
           .attr('transform', function(d)  { return 'translate(' + svgSize * 0.05 + ',' + svgSize * 0.05 + ')scale(1,1)'; });
 
       function zoomed() {
@@ -80,7 +88,7 @@ d3module.service('visualiseService', function() {
               return d.prev_out.hash;
             }
           })
-          .attr('dx', 5)
+          .attr('dx', 10)
           .attr('dy', 2)
           .style('opacity', 0.0);
 
@@ -92,27 +100,59 @@ d3module.service('visualiseService', function() {
       var firstNode = layoutRoot.select('g.node');
         firstNode.append('text')
               .text(function(d) {
-                d.showText = true;
                 return d.hash; 
               } )
               .attr('dy', -5)
               .attr('dx', -10);
 
-      function refreshNodes() {
+      function refreshTree() {
         // Select all the nodes in the tree, apart from the root node
-        nodeGroup.selectAll('text')
-            .filter(function(d) { return d != treeData; } )
+        var filteredNodeGroup = nodeGroup.filter(function(d) { return d != treeData; } );
+
+        filteredNodeGroup.select('circle.node-dot')
+          .transition()
+            .duration(transitionDuration)
+            .attr('r', function(d)  {
+              if (d.highlight)  {
+                return 6.0;
+              }
+              else  {
+                return 2.0;
+              }
+            });
+
+        filteredNodeGroup.selectAll('text')
             // Fade our text in or out
             .transition()
-              .duration(750)
+              .duration(transitionDuration)
               .style('opacity', function(d) {
-                if (d.hasOwnProperty('showText') && d.showText) {
+                if (d.highlight) {
                   return 1.0;
                 }
                 else  {
                   return 0.0;
                 }
             });
+
+        linkGroup.transition()
+          .duration(transitionDuration)
+          .style('stroke', function(d) {
+          if (d.target.highlight === true && d.source.highlight === true) {
+            return 'rgb(255,128,0)';
+          }
+          else  {
+            return '#ddd';
+          }
+        })
+      }
+
+      function highlightNodeAndChildren(d, shouldHighlight)  {
+        d.highlight = shouldHighlight;
+        if (typeof(d.children) != 'undefined')  {
+          d.children.forEach(function(child) {
+            highlightNodeAndChildren(child, shouldHighlight);
+          });
+        }
       }
 
       function click(d) {
@@ -120,13 +160,10 @@ d3module.service('visualiseService', function() {
         if (d === treeData)  {
           return;
         }
-        if (!d.hasOwnProperty('showText') || d.showText === false) {
-          d.showText = true;
-        }
-        else  {
-          d.showText = false;
-        }
-        refreshNodes();
+
+        var shouldHighlight = !d.highlight;
+        highlightNodeAndChildren(d, shouldHighlight);
+        refreshTree();
       }
     };
 });
