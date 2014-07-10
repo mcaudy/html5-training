@@ -218,7 +218,17 @@ controllers.controller('BlockDetailsController', ['$scope', '$routeParams', 'Dat
          .on('click', click);
 
       nodeGroup.append('text')
-          .text(function(d) { return ''; });
+          .text(function(d) {
+            if (d.hasOwnProperty('hash')) {
+              return d.hash; 
+            }
+            else  {
+              return d.prev_out.hash;
+            }
+          })
+          .attr('dx', 5)
+          .attr('dy', 2)
+          .style('opacity', 0.0);
 
       nodeGroup.append('circle')
          .attr('class', 'node-dot')
@@ -238,21 +248,17 @@ controllers.controller('BlockDetailsController', ['$scope', '$routeParams', 'Dat
         // Select all the nodes in the tree, apart from the root node
         nodeGroup.selectAll('text')
             .filter(function(d) { return d != treeData; } )
-            .text(function(d) {
-              if (d.hasOwnProperty('showText') && d.showText === true)  {
-                if (d.hasOwnProperty('hash')) {
-                  return d.hash; 
+            // Fade our text in or out
+            .transition()
+              .duration(750)
+              .style('opacity', function(d) {
+                if (d.hasOwnProperty('showText') && d.showText) {
+                  return 1.0;
                 }
                 else  {
-                  return d.prev_out.hash;
+                  return 0.0;
                 }
-              }
-              else  {
-                return '';
-              }
-            })
-            .attr('dx', 5)
-            .attr('dy', 2);
+            });
       }
 
       function click(d) {
