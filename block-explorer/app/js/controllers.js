@@ -139,6 +139,7 @@ controllers.controller('BlockDetailsController', ['$scope', '$routeParams', 'Dat
       blockPromise.then(function(data) {
         console.log(data);
         $scope.block = data;
+        visualiseTransactions();
       });
     };
     updateBlockData(hash);
@@ -147,4 +148,82 @@ controllers.controller('BlockDetailsController', ['$scope', '$routeParams', 'Dat
         console.log('Data model updated. Updating block data');
         updateBlockData(hash);
     });
+
+    var visualiseTransactions = function()  {
+      // Put our array of transactions into a tree, where the root node has the same 'in' property as its children
+      var treeData = {
+        'in' : $scope.block.tx
+      };
+
+      // For now, I'm limiting the number of children displayed. Otherwise the tree gets too busy
+      treeData['in'] = treeData['in'].slice(0, 50);
+
+      var svgSize = 960;
+      var treeSize = svgSize * 0.8;
+
+      var tree = d3.layout.tree()
+                  .sort(null)
+                  .size([treeSize, treeSize])
+                  .children(function(d) {
+                    return (!d['in'] || d['in'].length === 0) ? null : d['in'];
+                  });
+
+      var nodes = tree.nodes(treeData);
+      var links = tree.links(nodes);
+
+      // Set zoom behaviour on the svg element. This also seems to enable dragging behaviour. Good times.
+      var zoom = d3.behavior.zoom()
+        .scaleExtent([0.1, 10])
+        .on("zoom", zoomed);
+
+      var svg = d3.select('svg');
+      svg.style('background-color', 'white')
+        .style("width", svgSize)
+        .style('height', svgSize);
+      svg.call(zoom);
+
+      // Render the tree. We start zoomed out with the tree in the middle of the view. We then zoom in on it
+      var layoutRoot = svg.append("g")
+        .attr("class", "container")
+        .attr("transform", "translate(" + treeSize / 3 + "," + treeSize / 3 + ")scale(0.2,0.2)")
+        .call(zoom);
+
+      layoutRoot.transition()
+          .duration(750)
+          .attr("transform", function(d)  { return "translate(" + svgSize * 0.05 + "," + svgSize * 0.05 + ")scale(1,1)"; });
+
+      function zoomed() {
+        layoutRoot.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+      }
+
+      // Links between nodes
+      var link = d3.svg.diagonal()
+         .projection(function(d) { return [d.y, d.x]; });
+
+      var linkGroup = layoutRoot.selectAll("path.link")
+         .data(links)
+         .enter()
+         .append("path")
+         .attr("class", "link")
+         .attr("d", link);
+
+      // Nodes
+      var nodeGroup = layoutRoot.selectAll("g.node")
+        .data(nodes)
+        .enter()
+         .append("g")
+         .attr("class", "node")
+         .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+      nodeGroup.append("circle")
+         .attr("class", "node-dot")
+         .attr("r", 2);
+
+      // The first node is this block. We label it as such
+      var firstNode = layoutRoot.select("g.node");
+        firstNode.append("text")
+              .text(function(d) { return 'This block'; } )
+              .attr('dy', -10)
+              .attr('dx', -30);
+    };
   }]);

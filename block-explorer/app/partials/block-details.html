@@ -1,63 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap 101 Template</title>
+<div class="jumbotron">
+  <a class="btn btn-lg btn-primary" href="index.html" role="button">Back to main list</a>
 
-    <!-- Bootstrap -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+  <h2>Hash: {{block.hash}}</h2>
+  <p>Version: {{block.ver}}</p>
+  <p>Previous Block: {{block.prev_block}}</p>
+  <!-- <p>Merkle Root: {{block.mrkl_root}}</p>
+  <p>Time: {{block.time}}</p>
+  <p>Nonce: {{block.nonce}}</p> -->
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="jumbotron">
-      <h2>Hash: {{block.hash}}</h2>
-      <p>Version: {{block.ver}}</p>
-      <p>Previous Block: {{block.prev_block}}</p>
-      <p>Merkle Root: {{block.mrkl_root}}</p>
-      <p>Time: {{block.time}}</p>
-      <p>Nonce: {{block.nonce}}</p>
+  <h2>Previous Transactions</h2>
+  <svg></svg>
 
-      <h2>Previous Transactions</h2>
-      <div class="row">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Block Hash</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>51d37bdd871c9e1f4d5541be67a6ab625e32028744d7d4609d0c37747b40cd2d</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>60c25dda8d41f8d3d7d5c6249e2ea1b05a25bf7ae2ad6d904b512b31f997e1a1</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>01f314cdd8566d3e5dbdd97de2d9fbfbfd6873e916a00d48758282cbb81a45b9</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <a class="btn btn-lg btn-primary" href="index.html" role="button">Back to main list</a>
-
-    </div>
-
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
-  </body>
-</html>
+</div>

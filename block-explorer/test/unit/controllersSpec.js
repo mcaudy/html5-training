@@ -211,7 +211,8 @@ describe('Block details controller', function() {
           var data = {hash: expectedHash,
                 ver: '1',
                 prev_block: 'ffff',
-                mrkl_root: '00ff'
+                mrkl_root: '00ff',
+                tx: []
           };
           deferred.resolve(data);
           return deferred.promise;
