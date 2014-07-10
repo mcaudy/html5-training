@@ -19,6 +19,7 @@ controllers.service('DataModel', ['$rootScope', '$http', '$q', function($rootSco
     var blockData = httpResponse.data;
     var deferred = $q.defer();
     currentPageHashes[currentPageHashes.length] = blockData.hash;
+    $rootScope.$broadcast('dataModel::blockLoaded');
     deferred.resolve(blockData.prev_block);
     return deferred.promise;
   };
@@ -110,12 +111,20 @@ controllers.controller('BlockListController', ['$scope', '$http', 'DataModel', f
       DataModel.loadLatestPageData();
     }
 
+    $scope.progress = 0;
+
     console.log('Loading block list controller');
+
+    $scope.$on('dataModel::blockLoaded', function(event) {
+      $scope.progress = $scope.progress + 10;
+      console.log($scope.progress);
+    });
 
     $scope.$on('dataModel::dataUpdated', function(event) {
         console.log('Data model updated. Updating blocks array');
         $scope.blocks = DataModel.getCurrentPageHashes();
         $scope.isLastPage = DataModel.isLastPage();
+        $scope.progress = 0;
     });
 
     $scope.blocks = DataModel.getCurrentPageHashes();

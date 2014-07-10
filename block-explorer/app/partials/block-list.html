@@ -15,6 +15,10 @@
               </div>
             </form>
           </div>
+          <div>
+            <progressbar max="90" value="progress" ng-show="progress > 0">Loading blocks...</progressbar>
+          </div>
+          <h3>Block Hashes</h3>
           <a href="#/block-list/{{block}}" class="list-group-item" ng-repeat="block in blocks | filter: query">{{block}}</a>
         </div>
         <div class="col-md-1">
