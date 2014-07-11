@@ -4,9 +4,14 @@
   <h2>Hash: {{block.hash}}</h2>
   <p>Version: {{block.ver}}</p>
   <p>Previous Block: {{block.prev_block}}</p>
-  <!-- <p>Merkle Root: {{block.mrkl_root}}</p>
-  <p>Time: {{block.time}}</p>
-  <p>Nonce: {{block.nonce}}</p> -->
+    <div class="row">
+        <div class="col-md-1">
+            <a class="btn btn-lg btn-primary" role="button" ng-click="verifyBlock()">Verify</a>
+        </div>
+        <div class="col-md-1">
+            <p>{{blockState}}</p>
+        </div>
+    </div>
 
   <h2>Previous Transactions</h2>
   <svg></svg>

@@ -139,7 +139,7 @@ controllers.controller('BlockListController', ['$scope', '$http', 'DataModel', f
     };
   }]);
 
-controllers.controller('BlockDetailsController', ['$scope', '$routeParams', 'DataModel', 'visualiseService', function($scope, $routeParams, DataModel, visualiseService) {
+controllers.controller('BlockDetailsController', ['$scope', '$routeParams', '$http', 'DataModel', 'visualiseService', function($scope, $routeParams, $http, DataModel, visualiseService) {
   	var hash = $routeParams.hash;
 
     var updateBlockData = function(hash)  {
@@ -150,6 +150,27 @@ controllers.controller('BlockDetailsController', ['$scope', '$routeParams', 'Dat
         visualiseService.visualiseTransactions($scope.block.tx);
       });
     };
+    
+    var verifyBlock = function()    {
+        // Take the block header, which we're defining here as everything other than the transactions in the block
+        var blockHeader = {};
+        for (var prop in $scope.block)  {
+            if (prop != 'tx' && $scope.block.hasOwnProperty(prop)) {
+                blockHeader[prop] = $scope.block[prop];
+            }
+        }
+        $http.post('http://localhost:8080/block-verifier/block', blockHeader).success(function(data) {
+            if (data.result)    {
+                $scope.blockState = 'valid';
+            }
+            else    {
+                $scope.blockState = 'invalid';
+            }
+        });
+    }
+    $scope.verifyBlock = verifyBlock;
+    $scope.blockState = '';
+    
     updateBlockData(hash);
 
     $scope.$on('dataModel::dataUpdated', function(event) {
