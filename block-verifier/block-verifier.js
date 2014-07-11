@@ -2,7 +2,7 @@
 
 var crypto = require("crypto");
 
-var hashFunc = function(hexString)	{
+var hashFunc = function (hexString) {
 	var shasum = crypto.createHash("sha256");
 
 	var data = new Buffer(hexString, "hex");
@@ -10,12 +10,12 @@ var hashFunc = function(hexString)	{
 	return shasum.digest("hex");
 };
 
-var doubleHashFunc = function(data)	{
+var doubleHashFunc = function (data) {
 	var digest = hashFunc(data);
 	return hashFunc(digest);
 };
 
-var convertEndian = function(string)	{
+var convertEndian = function (string) {
 	var result = "";
 	for (var i = 0; i < string.length; i = i+2)	{
 		var subString = string.substring(i, i + 2);
@@ -87,13 +87,12 @@ var calculateMrklRoot = function(mrklTree)	{
 	}
 };
 
-// For quick testing, we currently try and calculate the merkle root of our transactions tree if this script is run from Node.
-var block = require("./data/block.json");
-calculateMrklRoot(block.mrkl_tree);
+var verifyDataBlockFile = function(blockFilePath)   {
+    var block = require(blockFilePath);
+    return verifyDataBlock(block);
+}
 
-var verifyDataBlock = function(blockFilePath)	{
-	var block = require(blockFilePath);
-
+var verifyDataBlock = function(block)	{
 	var littleEndianPrevious = convertEndian(block.prev_block);
 	console.log("Previous block (little endian): " + littleEndianPrevious);
 
@@ -129,3 +128,4 @@ var verifyDataBlock = function(blockFilePath)	{
 };
 
 module.exports.verifyDataBlock = verifyDataBlock;
+module.exports.verifyDataBlockFile = verifyDataBlockFile;
